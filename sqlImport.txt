@@ -1,0 +1,78 @@
+CREATE DATABASE IF NOT EXISTS libraryFrontSystem;
+USE libraryFrontSystem;
+
+-- ==========================
+--  STUDENTS TABLE
+-- ==========================
+CREATE TABLE IF NOT EXISTS students (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id VARCHAR(50) UNIQUE NOT NULL,
+  full_name VARCHAR(100) NOT NULL,
+  course VARCHAR(50),
+  year_level VARCHAR(20),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Sample Students
+INSERT INTO students (student_id, full_name, course, year_level) VALUES
+('2021-001', 'Angel Dela Cruz', 'BSIT', '3rd Year'),
+('2021-002', 'Juan Santos', 'BSCS', '2nd Year'),
+('2021-003', 'Maria Lopez', 'BSTM', '1st Year');
+
+
+-- ==========================
+--  BOOKS TABLE
+-- ==========================
+CREATE TABLE IF NOT EXISTS books (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(200) NOT NULL,
+  author VARCHAR(150) NOT NULL,
+  total_copies INT DEFAULT 1,
+  available INT DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Sample Books
+INSERT INTO books (title, author, total_copies, available) VALUES
+('The Great Gatsby', 'F. Scott Fitzgerald', 3, 3),
+('To Kill a Mockingbird', 'Harper Lee', 5, 5),
+('Introduction to Java Programming', 'Daniel Liang', 4, 4),
+('Web Development for Beginners', 'Mark Reyes', 2, 2);
+
+
+-- ==========================
+--  ENTRY LOGS TABLE
+-- ==========================
+CREATE TABLE IF NOT EXISTS entry_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id VARCHAR(50) NOT NULL,
+  entry_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (student_id) REFERENCES students(student_id)
+);
+
+-- Sample entry
+INSERT INTO entry_logs (student_id) VALUES
+('2021-001');
+
+
+-- ==========================
+--  BORROW RECORDS TABLE
+-- ==========================
+CREATE TABLE IF NOT EXISTS borrow_records (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id VARCHAR(50) NOT NULL,
+  book_id INT NOT NULL,
+  borrow_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  return_time TIMESTAMP NULL,
+  FOREIGN KEY (student_id) REFERENCES students(student_id),
+  FOREIGN KEY (book_id) REFERENCES books(id)
+);
+
+-- Sample borrow record (unreturned)
+INSERT INTO borrow_records (student_id, book_id) VALUES
+('2021-001', 1),
+('2021-001', 3);
+
+-- Sample returned record
+INSERT INTO borrow_records (student_id, book_id, return_time) VALUES
+('2021-002', 2, NOW());
